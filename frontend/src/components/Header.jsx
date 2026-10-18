@@ -138,7 +138,7 @@ export default function Header({ activeTab, setActiveTab, onOpenDrawer, setSelec
 
               <div className="leading-tight">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-black text-lg sm:text-xl tracking-tight text-white text-3d-white group-hover:text-[#febd69] transition duration-200">
+                  <span className="font-black text-lg sm:text-xl tracking-tight text-white group-hover:text-[#febd69] transition duration-200">
                     {lang === 'bn' ? 'ভূমিসাথী' : 'BhumiSathi'}
                   </span>
                   <span className="text-xs font-semibold text-gray-300 hidden sm:inline">

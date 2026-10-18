@@ -102,7 +102,7 @@ export default function SlideDrawer({ isOpen, onClose, activeTab, setActiveTab }
           <div className="flex items-center gap-2.5">
             <BhumiSathiLogo size={28} className="w-7 h-7 flex-shrink-0" />
             <div>
-              <div className="text-3d-gold text-sm font-black tracking-tight leading-none">
+              <div className="text-[#febd69] text-sm font-black tracking-tight leading-none">
                 {lang === 'bn' ? 'ভূমিসাথী' : 'BhumiSathi'}
               </div>
               <div className="text-[10px] text-gray-400 leading-tight">
