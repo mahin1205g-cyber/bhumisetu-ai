@@ -136,7 +136,7 @@ pytest tests
 - **দলের নাম:** টিম ভূমিসাথী (Team BhumiSathi)
 - **প্রতিষ্ঠান:** ড্যাফোডিল ইন্টারন্যাশনাল ইউনিভার্সিটি (DIU)
 - **টিম লিডার(1st member):** মোঃ বায়েজিদ (Md Bayazid) — `dbscbayazid111@gmail.com` | `01645241040`
-   **2nd member : Zarin Tasnim Proma ID(252-15-8)
+   **2nd member : Zarin Tasnim Proma ID(252-15-870)
    **Mentor     :Md. Ferdouse Ahmed Foysal 
    **Industry Expert : Hanjala Habib Sadik
 - **গিটহাব রিপোজিটরি:** [https://github.com/mahin1205g-cyber/bhumisetu-ai](https://github.com/mahin1205g-cyber/bhumisetu-ai)
