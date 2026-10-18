@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ভূমি লেনদেন ঝুঁকি যাচাই</title>
+<style>
+:root{--bg:#f6f8f7;--card:#fff;--ink:#16221d;--mute:#5d6b65;--line:#d8e0dc;--brand:#1f6b4f;
+--hi:#b3261e;--hib:#fde8e6;--md:#8a5a00;--mdb:#fff2d6;--lo:#1f6b4f;--lob:#e3f3ea}
+@media (prefers-color-scheme:dark){:root{--bg:#121917;--card:#1a2420;--ink:#e8f0ec;--mute:#9fb0a8;--line:#2d3b35;--brand:#5fc79a;
+--hi:#ff8a80;--hib:#3a1d1b;--md:#ffc766;--mdb:#3a2d12;--lo:#5fc79a;--lob:#16301f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Noto Sans Bengali","Kalpurush","Segoe UI",system-ui,sans-serif}
+header{padding:18px 16px;border-bottom:2px solid var(--brand);display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+h1{font-size:1.25rem;margin:0}h2{font-size:1.05rem;margin:0 0 10px}
+main{max-width:1100px;margin:0 auto;padding:16px;display:grid;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{padding:10px 12px;border-left:4px solid var(--line);background:var(--card);border-radius:4px}
+.stat b{font-size:1.6rem;display:block;line-height:1.2}
+.stat.hi{border-color:var(--hi)}.stat.md{border-color:var(--md)}.stat.lo{border-color:var(--lo)}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+label{font-size:.85rem;color:var(--mute);display:grid;gap:3px}
+input{padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus-visible,button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+button{padding:9px 14px;border:0;border-radius:6px;background:var(--brand);color:#fff;font:inherit;cursor:pointer}
+button.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody tr{cursor:pointer}tbody tr:hover{background:var(--bg)}tr.sel{background:var(--bg);outline:2px solid var(--brand)}
+.badge{padding:2px 9px;border-radius:99px;font-size:.82rem;font-weight:600}
+.badge.high{background:var(--hib);color:var(--hi)}.badge.medium{background:var(--mdb);color:var(--md)}.badge.low{background:var(--lob);color:var(--lo)}
+.alert{border-left:5px solid var(--line);padding:10px 12px;border-radius:4px;background:var(--bg);margin-bottom:10px}
+.alert.high{border-color:var(--hi);background:var(--hib)}.alert.medium{border-color:var(--md);background:var(--mdb)}.alert.low{border-color:var(--lo);background:var(--lob)}
+tr.new td{font-weight:700;background:var(--mdb)}
+.muted{color:var(--mute)}.err{color:var(--hi)}
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <h1>ভূমি লেনদেন ঝুঁকি যাচাই: একাধিকবার বিক্রি ও জালিয়াতি শনাক্তকরণ</h1>
+  <button class="ghost" id="seed">ডেমো ডেটা লোড করুন</button>
+</header>
+<main>
+  <section class="stats" id="stats"></section>
+  <section class="card">
+    <h2>নতুন দলিল যাচাই করুন</h2>
+    <form id="f">
+      <label>দলিল নম্বর<input name="deed_no" required></label>
+      <label>প্লট আইডি<input name="plot_id" required placeholder="DHK-MIR-001"></label>
+      <label>বিক্রেতা<input name="seller" required></label>
+      <label>ক্রেতা<input name="buyer" required></label>
+      <label>বিক্রয়ের তারিখ<input name="sale_date" type="date" required></label>
+      <label>দাম (টাকা)<input name="price" type="number" min="1" required></label>
+      <label>জমির পরিমাণ (শতক)<input name="area" type="number" step="0.01" min="0.01" required></label>
+      <label>&nbsp;<button>ঝুঁকি যাচাই করুন</button></label>
+    </form>
+    <p class="err" id="err"></p>
+  </section>
+  <section class="card" id="detail" hidden>
+    <h2>যাচাইয়ের ফল ও রেকর্ড তুলনা</h2>
+    <div id="dbody"></div>
+  </section>
+  <section class="card">
+    <h2>সব রেকর্ড</h2>
+    <div class="wrap"><table>
+      <thead><tr><th>দলিল</th><th>প্লট</th><th>বিক্রেতা</th><th>ক্রেতা</th><th>তারিখ</th><th>দাম</th><th>ঝুঁকি</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <p class="muted" id="empty" hidden>কোনো রেকর্ড নেই। উপরে “ডেমো ডেটা লোড করুন” চাপুন।</p>
+  </section>
+</main>
+<script>
+const L={high:"উচ্চ",medium:"মাঝারি",low:"নিম্ন"};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const bn=n=>Number(n).toLocaleString("bn-BD");
+const badge=r=>`<span class="badge ${r.risk_level}">${L[r.risk_level]} (${bn(r.risk_score)})</span>`;
+async function api(p,o){const r=await fetch(p,o);if(!r.ok)throw new Error((await r.json().catch(()=>({}))).detail||"অনুরোধ ব্যর্থ হয়েছে");return r.json()}
+
+async function load(selectId){
+  const [st,rows]=await Promise.all([api("/api/stats"),api("/api/records")]);
+  $("#stats").innerHTML=[["total","মোট রেকর্ড",""],["high","উচ্চ ঝুঁকি","hi"],["medium","মাঝারি ঝুঁকি","md"],["low","নিম্ন ঝুঁকি","lo"]]
+    .map(([k,t,c])=>`<div class="stat ${c}"><b>${bn(st[k])}</b>${t}</div>`).join("");
+  $("#empty").hidden=rows.length>0;
+  $("#rows").innerHTML=rows.map(r=>`<tr data-id="${r.id}" class="${r.id===selectId?"sel":""}"><td>${esc(r.deed_no)}</td><td>${esc(r.plot_id)}</td><td>${esc(r.seller)}</td><td>${esc(r.buyer)}</td><td>${r.sale_date}</td><td>${bn(r.price)}</td><td>${badge(r)}</td></tr>`).join("");
+  $("#rows").querySelectorAll("tr").forEach(tr=>tr.onclick=()=>show(+tr.dataset.id));
+}
+async function show(id){
+  const r=await api("/api/records/"+id), h=await api("/api/plots/"+encodeURIComponent(r.plot_id)+"/history");
+  $("#detail").hidden=false;
+  $("#dbody").innerHTML=`<div class="alert ${r.risk_level}"><b>${badge(r)}</b> ${esc(r.explanation)}</div>
+  ${r.flags.length?"<ul>"+r.flags.map(f=>`<li>${esc(f.msg)} <span class="muted">(+${f.points})</span></li>`).join("")+"</ul>":""}
+  <p class="muted">প্লট ${esc(r.plot_id)}-এর মালিকানার ধারা (সংশ্লিষ্ট দলিলটি হাইলাইট করা):</p>
+  <div class="wrap"><table><thead><tr><th>তারিখ</th><th>দলিল</th><th>বিক্রেতা</th><th>ক্রেতা</th><th>দাম</th><th>ঝুঁকি</th></tr></thead><tbody>
+  ${h.map(x=>`<tr class="${x.id===r.id?"new":""}"><td>${x.sale_date}</td><td>${esc(x.deed_no)}</td><td>${esc(x.seller)}</td><td>${esc(x.buyer)}</td><td>${bn(x.price)}</td><td>${badge(x)}</td></tr>`).join("")}
+  </tbody></table></div>`;
+  document.querySelectorAll("#rows tr").forEach(t=>t.classList.toggle("sel",+t.dataset.id===id));
+  $("#detail").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+$("#f").onsubmit=async e=>{
+  e.preventDefault();$("#err").textContent="";
+  const d=Object.fromEntries(new FormData(e.target));d.price=+d.price;d.area=+d.area;
+  try{const r=await api("/api/records",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});
+    await load(r.id);await show(r.id);}catch(x){$("#err").textContent=x.message}
+};
+$("#seed").onclick=async()=>{await api("/api/seed",{method:"POST"});$("#detail").hidden=true;load()};
+load().catch(x=>$("#err").textContent=x.message);
+</script>
+</body>
+</html>
