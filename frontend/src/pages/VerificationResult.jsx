@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import QRCodeCanvas from '../components/QRCodeCanvas';
 import {
   FileCheck2, CheckCircle2, AlertTriangle, AlertOctagon, Printer,
-  ArrowLeft, Download, ShieldCheck, ExternalLink, Info
+  ArrowLeft, Download, ShieldCheck, ExternalLink, Info, QrCode
 } from 'lucide-react';
 
 export default function VerificationResult({ result, setActiveTab }) {

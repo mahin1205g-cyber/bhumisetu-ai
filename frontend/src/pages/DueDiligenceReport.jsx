@@ -255,7 +255,7 @@ export default function DueDiligenceReport({ result, setActiveTab }) {
                 <span className="w-5 h-5 rounded-full bg-[#0b462d] text-[#ffd700] text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                   {i + 1}
                 </span>
-                <span className="leading-relaxed">{lang === 'bn' ? rec.bn : rec.en}</span>
+                <span className="leading-relaxed">{typeof rec === 'string' ? rec : (lang === 'bn' ? (rec.bn || rec.en) : (rec.en || rec.bn))}</span>
               </div>
             ))}
           </div>
