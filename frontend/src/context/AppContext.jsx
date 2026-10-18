@@ -24,7 +24,7 @@ export function AppProvider({ children }) {
         if (parsed && parsed.role === 'admin') {
           return {
             ...parsed,
-            name: "সিস্টেম অ্যাডমিনিস্ট্রেটর",
+            name: "Md Bayazid Hossain",
             email: "dbscbayazid111@gmail.com",
             phone: "01645241040"
           };
@@ -34,14 +34,7 @@ export function AppProvider({ children }) {
         // fallback
       }
     }
-    return {
-      id: 1,
-      name: "মোঃ রফিকুল ইসলাম",
-      email: "citizen@bhumisathi.gov.bd",
-      role: "citizen",
-      nid: "19902692518000123",
-      designation: "নাগরিক"
-    };
+    return null;
   });
 
   const [notifications, setNotifications] = useState([]);
@@ -132,7 +125,7 @@ export function AppProvider({ children }) {
       },
       admin: {
         id: 3,
-        name: "সিস্টেম অ্যাডমিনিস্ট্রেটর",
+        name: "Md Bayazid Hossain",
         email: "dbscbayazid111@gmail.com",
         phone: "01645241040",
         role: "admin",

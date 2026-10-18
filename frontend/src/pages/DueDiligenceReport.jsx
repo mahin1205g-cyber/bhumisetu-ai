@@ -265,9 +265,10 @@ export default function DueDiligenceReport({ result, setActiveTab }) {
         <div className="pt-6 border-t-2 border-gray-200 dark:border-gray-800 flex flex-wrap items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <QRCodeCanvas
-              value={`https://landguard.gov.bd/due-diligence/${report_ref}`}
-              size={95}
+              value={`[ভূমিসাথী — নাগরিক প্রাক-ক্রয় স্বত্ব যাচাই / Due Diligence]\nরিপোর্ট রেফারেন্স: ${report_ref || 'LG-DD-2026'}\nঝুঁকি মূল্যায়ন স্তর: ${risk_level || 'HIGH'}\nমোট ঝুঁকি স্কোর: ${risk_score || 0}/100\nশনাক্তকৃত ঝুঁকি সূচক: ${(indicators || []).length} টি\nমডেল: Isolation Forest Anomaly Detection O(log N)\nযাচাই লিংক: ${typeof window !== 'undefined' ? window.location.origin : ''}/#due-diligence/${report_ref || 'LG-DD-2026'}`}
+              size={100}
               label={report_ref}
+              title={lang === 'bn' ? 'ডিউ ডিলিজেন্স যাচাই সনদ কিউআর' : 'Due Diligence QR Certificate'}
             />
             <div className="space-y-1 text-xs">
               <span className="font-bold text-gray-900 dark:text-white block">
@@ -278,6 +279,9 @@ export default function DueDiligenceReport({ result, setActiveTab }) {
                   ? 'এই কিউআর কোড স্ক্যান করে প্ল্যাটফর্মে সংরক্ষিত ঝুঁকি মূল্যায়ন রেফারেন্স যাচাই করা যাবে।'
                   : 'Scan to verify server-side risk assessment records on LandGuard AI.'}
               </p>
+              <span className="text-[10px] text-[#c59b27] font-semibold block">
+                {lang === 'bn' ? 'ক্লিক করে বড় করুন, লিংক কপি বা কিউআর কোড ডাউনলোড করুন।' : 'Click to enlarge, copy link, or download QR image.'}
+              </span>
             </div>
           </div>
 

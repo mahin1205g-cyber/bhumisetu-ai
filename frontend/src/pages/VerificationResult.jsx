@@ -239,9 +239,10 @@ export default function VerificationResult({ result, setActiveTab }) {
           {/* QR Code */}
           <div className="flex items-center gap-4">
             <QRCodeCanvas
-              value={`https://landguard.gov.bd/verify-deed/${verification_ref}`}
-              size={95}
+              value={`[ভূমিসাথী — ডিজিটাল সনদপত্র / BhumiSathi AI]\nরেফারেন্স: ${verification_ref || 'LG-VR-2026'}\nদলিল নং: ${extracted_summary?.deed_no || 'D-8492'} (${extracted_summary?.reg_year || 2023})\nমৌজা: ${extracted_summary?.mouza || 'পাইকপাড়া'}, দাগ: ${extracted_summary?.plot_id || 'DHK-MIR-002'}\nস্ট্যাটাস: ${result_status === 'MATCH' ? '১০০% তথ্যের মিল (VALID)' : 'গরমিল চিহ্নিত (FLAGGED)'}\nস্কোর: ${match_score || 100}%\nকর্তৃপক্ষ: সাব-রেজিস্ট্রি বালাম ও খতিয়ান ক্রস-ম্যাচ\nলিংক: ${typeof window !== 'undefined' ? window.location.origin : ''}/#verify/${verification_ref || 'LG-VR-2026'}`}
+              size={100}
               label={verification_ref}
+              title={lang === 'bn' ? 'ডিজিটাল দলিল যাচাই সনদ কিউআর' : 'Deed Verification QR Certificate'}
             />
             <div className="space-y-1 text-xs">
               <span className="font-bold text-gray-900 dark:text-white flex items-center gap-1">
@@ -254,7 +255,7 @@ export default function VerificationResult({ result, setActiveTab }) {
                   : 'Scan this QR code to validate the server-verified report reference.'}
               </p>
               <span className="text-[10px] text-[#c59b27] font-semibold block">
-                {lang === 'bn' ? 'সতর্কতা: এটি অফিশিয়াল সরকারি কিউআর কোড নয় (ডেমো যাচাই সনদ)।' : 'Notice: Simulated verification QR (Demo certificate).'}
+                {lang === 'bn' ? 'ক্লিক করে বড় করুন, লিংক কপি বা কিউআর কোড ডাউনলোড করুন।' : 'Click to enlarge, copy link, or download QR image.'}
               </span>
             </div>
           </div>
@@ -264,7 +265,7 @@ export default function VerificationResult({ result, setActiveTab }) {
             <div className="w-full h-full rounded-full border border-[#0b462d] flex flex-col items-center justify-center text-[9px] font-bold text-[#0b462d] dark:text-emerald-400 uppercase leading-tight">
               <span>LANDGUARD AI</span>
               <span className="text-[#c59b27]">VERIFIED</span>
-              <span>{verification_ref.split('-').pop()}</span>
+              <span>{(verification_ref || 'LG-VR-2026').split('-').pop()}</span>
             </div>
           </div>
         </div>

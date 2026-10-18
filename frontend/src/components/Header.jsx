@@ -349,74 +349,77 @@ export default function Header({ activeTab, setActiveTab, onOpenDrawer, setSelec
             </div>
 
             {/* Amazon-Style User Account Dropdown */}
-            <div className="relative">
-              {user ? (
-                <div
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 pl-2 pr-2.5 py-1 rounded-md hover:bg-[#232f3e] border border-transparent hover:border-gray-600 cursor-pointer select-none transition"
-                >
-                  <div className="w-6 h-6 rounded-full bg-[#febd69] text-gray-950 font-black text-xs flex items-center justify-center shadow">
-                    {user.name ? user.name[0] : 'U'}
-                  </div>
-                  <div className="text-left hidden lg:block leading-tight">
-                    <div className="text-[10px] text-gray-400">
-                      {lang === 'bn' ? 'হ্যালো,' : 'Hello,'} {user.name.split(' ')[0]}
+            {activeTab !== 'login' && activeTab !== 'register' && (
+              <div className="relative">
+                {user ? (
+                  <div
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="flex items-center gap-2 pl-2 pr-2.5 py-1 rounded-md hover:bg-[#232f3e] border border-transparent hover:border-gray-600 cursor-pointer select-none transition"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-[#febd69] text-gray-950 font-black text-xs flex items-center justify-center shadow">
+                      {user.role === 'admin' ? 'M' : (user.name ? user.name[0] : 'U')}
                     </div>
-                    <div className="text-xs font-bold text-white max-w-[110px] truncate">
-                      {user.role === 'admin' ? 'অ্যাডমিন' : user.role === 'officer' ? 'এসি ল্যান্ড' : 'নাগরিক'}
+                    <div className="text-left hidden lg:block leading-tight">
+                      <div className="text-[10px] text-gray-400">
+                        {lang === 'bn' ? 'হ্যালো,' : 'Hello,'} {user.role === 'admin' ? 'Md' : user.name.split(' ')[0]}
+                      </div>
+                      <div className="text-xs font-bold text-white max-w-[110px] truncate">
+                        {user.role === 'admin' ? 'অ্যাডমিন' : user.role === 'officer' ? 'এসি ল্যান্ড' : 'নাগরিক'}
+                      </div>
+                    </div>
+                    <ChevronDown className="w-3 h-3 text-gray-400" />
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setActiveTab('login')}
+                    className="gov-btn-gold text-xs py-1.5 px-3"
+                  >
+                    <User className="w-3.5 h-3.5" />
+                    <span>{t('navLogin')}</span>
+                  </button>
+                )}
+
+                {showUserMenu && user && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#131c27] text-gray-900 dark:text-gray-100 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-2 z-50">
+                    <div className="p-2 border-b border-gray-100 dark:border-gray-800">
+                      <div className="font-bold text-xs truncate">{user.role === 'admin' ? 'Md Bayazid Hossain' : user.name}</div>
+                      <div className="text-[11px] text-gray-500 truncate">{user.email}</div>
+                      <div className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold mt-0.5">
+                        {user.designation || user.role}
+                      </div>
+                    </div>
+
+                    <div className="py-1">
+                      <button
+                        onClick={() => { setActiveTab('profile'); setShowUserMenu(false); }}
+                        className="w-full text-left px-2.5 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-800 rounded flex items-center gap-2"
+                      >
+                        <User className="w-3.5 h-3.5 text-gray-500" />
+                        <span>{t('navProfile')}</span>
+                      </button>
+                      <button
+                        onClick={() => { setActiveTab('dashboard'); setShowUserMenu(false); }}
+                        className="w-full text-left px-2.5 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-800 rounded flex items-center gap-2"
+                      >
+                        <Shield className="w-3.5 h-3.5 text-gray-500" />
+                        <span>{t('navDashboard')}</span>
+                      </button>
+                    </div>
+
+                    <div className="pt-1 border-t border-gray-100 dark:border-gray-800">
+                      <button
+                        onClick={() => { logoutUser(); setShowUserMenu(false); setActiveTab('login'); }}
+                        className="w-full text-left px-2.5 py-1.5 text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded flex items-center gap-2 font-medium"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span>{t('navLogout')}</span>
+                      </button>
                     </div>
                   </div>
-                  <ChevronDown className="w-3 h-3 text-gray-400" />
-                </div>
-              ) : (
-                <button
-                  onClick={() => setActiveTab('login')}
-                  className="gov-btn-gold text-xs py-1.5 px-3"
-                >
-                  <User className="w-3.5 h-3.5" />
-                  <span>{t('navLogin')}</span>
-                </button>
-              )}
+                )}
+              </div>
+            )}
 
-              {showUserMenu && user && (
-                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#131c27] text-gray-900 dark:text-gray-100 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-2 z-50">
-                  <div className="p-2 border-b border-gray-100 dark:border-gray-800">
-                    <div className="font-bold text-xs truncate">{user.name}</div>
-                    <div className="text-[11px] text-gray-500 truncate">{user.email}</div>
-                    <div className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold mt-0.5">
-                      {user.designation || user.role}
-                    </div>
-                  </div>
-
-                  <div className="py-1">
-                    <button
-                      onClick={() => { setActiveTab('profile'); setShowUserMenu(false); }}
-                      className="w-full text-left px-2.5 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-800 rounded flex items-center gap-2"
-                    >
-                      <User className="w-3.5 h-3.5 text-gray-500" />
-                      <span>{t('navProfile')}</span>
-                    </button>
-                    <button
-                      onClick={() => { setActiveTab('dashboard'); setShowUserMenu(false); }}
-                      className="w-full text-left px-2.5 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-800 rounded flex items-center gap-2"
-                    >
-                      <Shield className="w-3.5 h-3.5 text-gray-500" />
-                      <span>{t('navDashboard')}</span>
-                    </button>
-                  </div>
-
-                  <div className="pt-1 border-t border-gray-100 dark:border-gray-800">
-                    <button
-                      onClick={() => { logoutUser(); setShowUserMenu(false); setActiveTab('login'); }}
-                      className="w-full text-left px-2.5 py-1.5 text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded flex items-center gap-2 font-medium"
-                    >
-                      <LogOut className="w-3.5 h-3.5" />
-                      <span>{t('navLogout')}</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>

@@ -257,7 +257,7 @@ def get_demo_users():
         },
         {
             "role": "admin",
-            "name": "সিস্টেম অ্যাডমিনিস্ট্রেটর",
+            "name": "Md Bayazid Hossain",
             "email": "dbscbayazid111@gmail.com",
             "phone": "01645241040",
             "password": "demo123",

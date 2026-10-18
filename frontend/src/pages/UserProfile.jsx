@@ -22,12 +22,12 @@ export default function UserProfile({ setActiveTab }) {
         {/* Profile Card Header */}
         <div className="flex flex-wrap items-center gap-4 border-b border-gray-100 dark:border-gray-800 pb-5">
           <div className="w-16 h-16 rounded-full bg-[#0b462d] border-2 border-[#c59b27] text-[#ffd700] text-2xl font-black flex items-center justify-center shadow">
-            {user?.name ? user.name[0] : 'U'}
+            {user?.role === 'admin' ? 'M' : (user?.name ? user.name[0] : 'U')}
           </div>
 
           <div className="space-y-1">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              {user?.name || 'ব্যবহারকারী'}
+              {user?.role === 'admin' ? 'Md Bayazid Hossain' : (user?.name || 'ব্যবহারকারী')}
             </h2>
             <div className="flex items-center gap-2">
               <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#fef9e7] text-[#c59b27] border border-[#c59b27]/30 dark:bg-amber-950/40 dark:text-amber-300">

@@ -284,23 +284,27 @@ function getMockFallback(endpoint, options = {}) {
   // 5. Auth Demo Users
   if (endpoint.includes("/auth/demo-users")) {
     return [
-      { role: "citizen", name: "মোঃ রফিকুল ইসলাম", email: "citizen@landguard.gov.bd", password: "demo123", designation: "নাগরিক" },
-      { role: "officer", name: "বেগম ফরিদা পারভীন", email: "officer@landguard.gov.bd", password: "demo123", designation: "সহকারী কমিশনার (ভূমি) / AC Land" },
-      { role: "admin", name: "সিস্টেম অ্যাডমিনিস্ট্রেটর", email: "admin@landguard.gov.bd", password: "demo123", designation: "সিস্টেম অ্যাডমিনিস্ট্রেটর" }
+      { role: "citizen", name: "মোঃ রফিকুল ইসলাম", email: "citizen@bhumisathi.gov.bd", password: "demo123", designation: "নাগরিক" },
+      { role: "officer", name: "বেগম ফরিদা পারভীন", email: "officer@bhumisathi.gov.bd", password: "demo123", designation: "সহকারী কমিশনার (ভূমি) / AC Land" },
+      { role: "admin", name: "Md Bayazid Hossain", email: "dbscbayazid111@gmail.com", password: "demo123", designation: "সিস্টেম আর্কিটেক্ট ও অ্যাডমিনিস্ট্রেটর" }
     ];
   }
 
   // 6. Login
   if (endpoint.includes("/auth/login")) {
+    const isAdmin = body.identifier && (body.identifier.includes("admin") || body.identifier.includes("bayazid"));
+    const isOfficer = body.identifier && body.identifier.includes("officer");
     return {
       success: true,
       token: `demo-token-${Date.now()}`,
       user: {
-        id: 1,
-        name: body.identifier && body.identifier.includes("officer") ? "বেগম ফরিদা পারভীন" : "মোঃ রফিকুল ইসলাম",
-        email: body.identifier || "citizen@landguard.gov.bd",
-        role: body.identifier && body.identifier.includes("officer") ? "officer" : "citizen",
-        designation: body.identifier && body.identifier.includes("officer") ? "সহকারী কমিশনার (ভূমি) / AC Land" : "নাগরিক"
+        id: isAdmin ? 3 : isOfficer ? 2 : 1,
+        name: isAdmin ? "Md Bayazid Hossain" : isOfficer ? "বেগম ফরিদা পারভীন" : "মোঃ রফিকুল ইসলাম",
+        email: body.identifier || (isAdmin ? "dbscbayazid111@gmail.com" : isOfficer ? "officer@bhumisathi.gov.bd" : "citizen@bhumisathi.gov.bd"),
+        role: isAdmin ? "admin" : isOfficer ? "officer" : "citizen",
+        designation: isAdmin ? "সিস্টেম আর্কিটেক্ট ও অ্যাডমিনিস্ট্রেটর" : isOfficer ? "সহকারী কমিশনার (ভূমি) / AC Land" : "নাগরিক",
+        phone: isAdmin ? "01645241040" : isOfficer ? "01819998877" : "01711002233",
+        nid: isAdmin ? "19882692518000789" : isOfficer ? "19852692518000456" : "19902692518000123"
       }
     };
   }

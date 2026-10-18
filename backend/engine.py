@@ -1397,7 +1397,7 @@ DEMO_DEEDS = [
 DEMO_USERS = [
     ("মোঃ রফিকুল ইসলাম", "citizen@landguard.gov.bd", "demo123", "citizen", "01711002233", "19902692518000123", "নাগরিক"),
     ("বেগম ফরিদা পারভীন", "officer@landguard.gov.bd", "demo123", "officer", "01819998877", "19852692518000456", "সহকারী কমিশনার (ভূমি) / AC Land"),
-    ("সিস্টেম অ্যাডমিনিস্ট্রেটর", "dbscbayazid111@gmail.com", "demo123", "admin", "01645241040", "19882692518000789", "প্রধান সিস্টেম অ্যাডমিনিস্ট্রেটর")
+    ("Md Bayazid Hossain", "dbscbayazid111@gmail.com", "demo123", "admin", "01645241040", "19882692518000789", "প্রধান সিস্টেম অ্যাডমিনিস্ট্রেটর")
 ]
 
 DEMO_MUTATIONS = [
