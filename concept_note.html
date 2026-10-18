@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>কনসেপ্ট নোট — ভূমিসাথী (BhumiSathi / LandGuard AI)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      font-family: 'Hind Siliguri', 'Inter', sans-serif;
+      color: #1e293b;
+      line-height: 1.5;
+      background: #f8fafc;
+      margin: 0;
+      padding: 24px;
+    }
+    .page-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 36px 40px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border-radius: 8px;
+    }
+    .header-bar {
+      border-bottom: 3px solid #0b462d;
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .header-title h1 {
+      margin: 0;
+      color: #0b462d;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .header-title h2 {
+      margin: 4px 0 0 0;
+      color: #b45309;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .header-meta {
+      text-align: right;
+      font-size: 11px;
+      color: #64748b;
+    }
+    .badge {
+      display: inline-block;
+      background: #0b462d;
+      color: #ffffff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+    h3 {
+      color: #0b462d;
+      font-size: 15px;
+      border-left: 4px solid #c59b27;
+      padding-left: 8px;
+      margin: 18px 0 8px 0;
+    }
+    p, li {
+      font-size: 12.5px;
+      color: #334155;
+      text-align: justify;
+    }
+    ul, ol {
+      margin: 6px 0;
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 4px;
+    }
+    .feature-card {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+    .feature-card h4 {
+      margin: 0 0 4px 0;
+      color: #0b462d;
+      font-size: 13px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 11.5px;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      text-align: left;
+    }
+    th {
+      background: #0b462d;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+    .arch-box {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: monospace;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      line-height: 1.4;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+    .no-print-bar {
+      max-width: 800px;
+      margin: 0 auto 16px auto;
+      background: #0b462d;
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .btn-print {
+      background: #febd69;
+      color: #0f172a;
+      border: none;
+      padding: 7px 16px;
+      font-weight: 700;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .btn-print:hover {
+      background: #f59e0b;
+    }
+    .page-break {
+      page-break-after: always;
+      height: 1px;
+    }
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .page-container {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .page-break {
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Floating Print Bar for the User -->
+  <div class="no-print-bar">
+    <span>📄 <strong>ল্যান্ডটেক হ্যাকাথন ২০২৬:</strong> কনসেপ্ট নোট (সর্বোচ্চ ৪ পৃষ্ঠা PDF জমা দিতে হবে)</span>
+    <button class="btn-print" onclick="window.print()">🖨️ PDF হিসেবে সংরক্ষণ করুন (Ctrl + P)</button>
+  </div>
+
+  <div class="page-container">
+    <!-- Header -->
+    <div class="header-bar">
+      <div class="header-title">
+        <h1>ভূমিসাথী (BhumiSathi / LandGuard AI)</h1>
+        <h2>কৃত্রিম বুদ্ধিমত্তা-চালিত সমন্বিত ডিজিটাল ভূমি নিরাপত্তা প্ল্যাটফর্ম</h2>
+        <span class="badge">Problem Statement: P2 + P4 + P5</span>
+      </div>
+      <div class="header-meta">
+        <strong>ল্যান্ডটেক ইনোভেশন হ্যাকাথন ২০২৬</strong><br>
+        প্ল্যাটফর্ম: landtech.diu.edu.bd/landtech<br>
+        তারিখ: ১৮ অক্টোবর ২০২৬
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <h3>১. নির্বাচিত সমস্যা বিবরণী (Selected Problem Statement)</h3>
+    <p>
+      বাংলাদেশে মোট দেওয়ানি মামলার প্রায় <strong>৭৫% থেকে ৮০% বিরোধ প্রত্যক্ষ বা পরোক্ষভাবে ভূমি ও স্বত্ব সংক্রান্ত</strong>। ল্যান্ডটেক হ্যাকাথনের আওতায় আমরা ৩টি প্রধান জাতীয় সমস্যাকে একক সরকারি সিস্টেমে অন্তর্ভুক্ত করেছি:
+    </p>
+    <ul>
+      <li><strong>P2 (ডিজিটাল দলিল ও মালিকানা যাচাই):</strong> সাব-রেজিস্ট্রি বালাম রেকর্ডের সাথে সাধারণ নাগরিকের দলিল ক্রসের তাৎক্ষণিক ব্যবস্থা না থাকায় ভুয়া দলিল, অস্তিত্বহীন দাগ এবং বিক্রেতার নামে ভুয়া রেকর্ড দিয়ে প্রতারণা ঘটে।</li>
+      <li><strong>P4 (স্মার্ট ই-নামজারি ওয়ার্কফ্লো):</strong> নামজারি আবেদনে নাগরিকের তথ্যের জটিলতা এবং আবেদনের অগ্রগতি ও মাঠ কর্মকর্তাদের আদেশের স্বচ্ছ রিয়েলটাইম টাইমলাইনের অভাব।</li>
+      <li><strong>P5 (প্রাক-ক্রয় নাগরিক ডিউ ডিলিজেন্স):</strong> জমি কেনার চুক্তির পূর্বে ওই জমির স্বত্ব ধারাবাহিকতা, পূর্বে একাধিকবার বিক্রি, অস্বাভাবিক দ্রুত হাতবদল, অধিগ্রহণ নোটিশ বা দেওয়ানি বিরোধ যাচাই করার একক নির্ভরযোগ্য ব্যবস্থা না থাকা।</li>
+    </ul>
+
+    <!-- Section 2 -->
+    <h3>২. বাংলাদেশের প্রেক্ষাপটে সমস্যাটি (Problem in Bangladesh Context)</h3>
+    <p>
+      বাংলাদেশের ভূমি ব্যবস্থাপনা ঐতিহাসিকভাবে জটিল পরিভাষা (মৌজা, খতিয়ান, জে.এল, সিএস, এসএ, আরএস, বিএস বালাম) দ্বারা পরিচালিত। বেশিরভাগ সাধারণ নাগরিক এই জটিল দলিলপত্র সহজে বুঝতে পারেন না, যার ফলে তারা দালাল চক্রের ওপর নির্ভরশীল হন। সাব-রেজিস্ট্রি অফিস (আইন মন্ত্রণালয়) এবং উপজেলা ভূমি অফিসের (ভূমি মন্ত্রণালয়) তথ্যের সমন্বয়হীনতার সুযোগ নিয়ে অসৎ ব্যক্তিরা একই জমি একাধিকবার বিক্রি করে কোটি কোটি টাকার প্রতারণা করে। এর ফলে নিরীহ পরিবারগুলো বছরের পর বছর আদালতের দ্বারে ঘুরে নিঃস্ব হয়।
+    </p>
+
+    <!-- Section 3 -->
+    <h3>৩. প্রস্তাবিত সমাধান: "ভূমিসাথী" (Proposed Solution)</h3>
+    <p>
+      <strong>ভূমিসাথী (BhumiSathi)</strong> হলো একটি আধুনিক, নির্ভরযোগ্য ও কৃত্রিম বুদ্ধিমত্তা-চালিত ওয়েব পোর্টাল, যা জমি কেনা, নামজারি করা ও দলিল যাচাইয়ে পূর্ণাঙ্গ নিরাপত্তা নিশ্চিত করে:
+    </p>
+
+    <div class="feature-card">
+      <h4>P2 সমাধান: বালাম ক্রস-চেক ও OCR গরমিল শনাক্তকরণ</h4>
+      <p style="margin:0;">দলিল নম্বর ও সাল ইনপুট দিলে বা স্ক্যান কপি আপলোড করলে সিস্টেম স্বয়ংক্রিয়ভাবে বালাম রেকর্ডের সাথে নাম, দাগ, খতিয়ান ও পরিমাণের গরমিল পয়েন্ট-বাই-পয়েন্ট লাল সতর্কতাসহ চিহ্নিত করে এবং মিল থাকলে ডিজিটাল ভেরিফাইড কিউআর সনদ দেয়।</p>
+    </div>
+
+    <div class="feature-card">
+      <h4>P4 সমাধান: স্মার্ট ই-নামজারি ও রিয়েলটাইম ট্র্যাকিং</h4>
+      <p style="margin:0;">৪-ধাপের নির্দেশিত উইজার্ডে খসড়া সংরক্ষণ, অটো-ভ্যালিডেশন, ট্র্যাকিং নম্বর (<code>MUT-2026-DHK-XXXX</code>) এবং এসি ল্যান্ড ও কানুনগোদের জন্য পূর্ণাঙ্গ পর্যালোচনা ও শুনানি নোটিশ জারির ড্যাশবোর্ড।</p>
+    </div>
+
+    <div class="feature-card">
+      <h4>P5 সমাধান: প্রাক-ক্রয় ডিউ ডিলিজেন্স ও ০-১০০ ঝুঁকি স্কোর</h4>
+      <p style="margin:0;">জমি কেনার আগেই প্লটের মালিকানা ধারাবাহিকতা, ৩০ দিনের মধ্যে অস্বাভাবিক হাতবদল, একাধিক বিক্রি ও দেওয়ানি বিরোধ যাচাই করে ০-১০০ স্কেলে স্বচ্ছ স্কোর এবং ৫টি জরুরি করণীয় নির্দেশ করে।</p>
+    </div>
+
+    <!-- Section 4 -->
+    <h3>৪. সিস্টেম আর্কিটেকচার ও প্রযুক্তি (Architecture & Tech Stack)</h3>
+    <div class="arch-box">
+[Frontend Layer: React 18 + Vite 6 + Tailwind CSS] (Bengali Native UI, Dark Mode, Offline Fallback)
+         │  REST API / JSON (O(log N) Scalable Search)
+[Backend Layer: FastAPI (Python 3.13) + SQLite3 B-Tree Indexing] (PBKDF2-HMAC-SHA256 Auth, RBAC)
+         │
+[AI Engines: Isolation Forest Anomaly Detection + Transparent Rule-Based Engine + PyPDF Text Extraction]
+    </div>
+    <ul>
+      <li><strong>ফ্রন্টএন্ড:</strong> React 18, Vite 6, Tailwind CSS (বাংলাদেশ সরকারি থিম টোকেন), Lucide Icons, Client-side Canvas QR Code।</li>
+      <li><strong>ব্যাকএন্ড:</strong> Python 3.13, FastAPI, SQLite 3 (সম্পূর্ণ রিলেশনাল স্কিমা ও B-Tree ডিস্ক ইনডেক্সিং যা ১০০-৫০০ মিলিয়ন রেকর্ডে সাব-মিলিমিলেসেকেন্ড অনুসন্ধান করতে সক্ষম)।</li>
+      <li><strong>এআই ও অ্যানোমালি ইঞ্জিন:</strong> Scikit-learn (Isolation Forest Anomaly Detection), রুল-বেসড কনফ্লিক্ট ইঞ্জিন, PyPDF রেজেক্স পার্সার।</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <!-- Section 5 -->
+    <h3>৫. মূল ফিচারসমূহ (Core Features)</h3>
+    <ul>
+      <li><strong>তাৎক্ষণিক বালাম ক্রস-চেকিং:</strong> দলিলের তথ্যের সাথে সাব-রেজিস্ট্রি বালাম রেকর্ডের মিল ও অমিল সেকেন্ডের মধ্যে বের করা।</li>
+      <li><strong>স্বচ্ছ গরমিল বিশ্লেষণ:</strong> দাগ, খতিয়ান, মৌজা ও নামের গরমিল সুনির্দিষ্টভাবে রেফারেন্সসহ দেখানো।</li>
+      <li><strong>প্রাক-ক্রয় ঝুঁকি বিশ্লেষণ:</strong> সার্বিক ঝুঁকি মাত্রা (Low/Medium/High Risk), প্রমাণক সূত্র এবং বায়না চুক্তির পূর্বে ৫টি করণীয় চেকলিস্ট।</li>
+      <li><strong>স্মার্ট নামজারি ট্র্যাকার:</strong> ভিজ্যুয়াল টাইমলাইন বার, যেখানে নাগরিক প্রতিটি ধাপে আদেশের অগ্রগতি দেখতে পান।</li>
+      <li><strong>কর্মকর্তা রিভিউ ড্যাশবোর্ড:</strong> সহকারী কমিশনার (ভূমি) ও এসি ল্যান্ডদের জন্য ১-ক্লিক অনুমোদন, অতিরিক্ত তথ্য তলব ও খারিজ আদেশ।</li>
+      <li><strong>ডিজিটাল কিউআর সনদ:</strong> যাচাইকৃত প্রতিটি সনদে ইউনিক রেফারেন্স আইডি ও ভেরিফায়েবল ডিজিটাল কিউআর কোড।</li>
+      <li><strong>এআই ল্যান্ড অ্যাসিস্ট্যান্ট (GPT-Land Chatbot):</strong> নাগরিকদের ভূমি সংক্রান্ত আইনি প্রশ্নের রিয়েলটাইম বাংলা উত্তরদাতা।</li>
+    </ul>
+
+    <!-- Section 6 -->
+    <h3>৬. দেশব্যাপী বাস্তবায়ন পরিকল্পনা (Nationwide Implementation Plan)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">পর্যায়</th>
+          <th style="width: 20%;">সময়কাল</th>
+          <th>প্রধান কার্যক্রম ও মাইলফলক</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>ফেজ ১: পাইলট টেস্টিং</strong></td>
+          <td>মাস ১ – ৩</td>
+          <td>ঢাকা জেলার ২টি উপজেলা ভূমি অফিস (এসি ল্যান্ড) ও সাব-রেজিস্ট্রি অফিসে পাইলট রান। ব্যবহারকারীদের ফিডব্যাক গ্রহণ ও এআই মডেল ফাইন-টিউনিং।</td>
+        </tr>
+        <tr>
+          <td><strong>ফেজ ২: সরকারি এপিআই ইন্টিগ্রেশন</strong></td>
+          <td>মাস ৪ – ৬</td>
+          <td>ভূমি মন্ত্রণালয় (MinLand)-এর ই-নামজারি এবং আইন মন্ত্রণালয়ের নিবন্ধন অধিদপ্তরের ডিজিটাল বালাম ডেটাবেজের সাথে সুরক্ষিত API গেটওয়ে স্থাপন।</td>
+        </tr>
+        <tr>
+          <td><strong>ফেজ ৩: দেশব্যাপী সম্প্রসারণ</strong></td>
+          <td>মাস ৭ – ১২</td>
+          <td>দেশের ৬৪ জেলার ৪৯৫টি উপজেলায় রোলআউট। ইউনিয়ন ডিজিটাল সেন্টার (UDC) এবং ডাক বিভাগের মাধ্যমে তৃণমূলের নাগরিকদের দোরগোড়ায় সেবা পৌঁছানো।</td>
+        </tr>
+        <tr>
+          <td><strong>ফেজ ৪: ব্লকচেইন ও জাতীয় বাস্তবায়ন</strong></td>
+          <td>মাস ১৩ – ১৮</td>
+          <td>প্রতিটি বালাম এন্ট্রিতে ক্রিপ্টোগ্রাফিক হ্যাশিং যুক্ত করে শতভাগ অপরিবর্তনীয় ও টেম্পার-প্রুফ জাতীয় ভূমি ডাটাবেজ নিরাপত্তা নিশ্চিতকরণ।</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Section 7 -->
+    <h3>৭. দল ও মেন্টরদের তথ্য (Team & Mentors Information)</h3>
+    <p><strong>দলের নাম:</strong> টিম ভূমিসাথী (Team BhumiSathi) | <strong>শিক্ষা প্রতিষ্ঠান:</strong> ড্যাফোডিল ইন্টারন্যাশনাল ইউনিভার্সিটি (DIU)</p>
+    <table>
+      <thead>
+        <tr>
+          <th>ক্রম</th>
+          <th>সদস্যের নাম</th>
+          <th>দলে ভূমিকা / পদবি</th>
+          <th>ইমেইল ও ফোন</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>১</td>
+          <td><strong>মোঃ বায়েজিদ (Md Bayazid)</strong></td>
+          <td>টিম লিডার ও ফুল-স্ট্যাক সিস্টেম আর্কিটেক্ট</td>
+          <td>dbscbayazid111@gmail.com | 01645241040</td>
+        </tr>
+        <tr>
+          <td>২</td>
+          <td>দলীয় সদস্য ২ (সদস্যের নাম)</td>
+          <td>ফ্রন্টএন্ড ডেভেলপার ও ইউআই/ইউএক্স ডিজাইনার</td>
+          <td>member2@diu.edu.bd</td>
+        </tr>
+        <tr>
+          <td>৩</td>
+          <td>দলীয় সদস্য ৩ (সদস্যের নাম)</td>
+          <td>এআই ও মেশিন লার্নিং ইঞ্জিনিয়ার</td>
+          <td>member3@diu.edu.bd</td>
+        </tr>
+        <tr>
+          <td>৪</td>
+          <td>দলীয় সদস্য ৪ (সদস্যের নাম)</td>
+          <td>রিসার্চ ও ডকুমেন্টেশন স্পেশালিস্ট</td>
+          <td>member4@diu.edu.bd</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top: 14px;">
+      <strong>মেন্টরদের তথ্য:</strong><br>
+      • <strong>প্রধান মেন্টর:</strong> (সম্মানিত শিক্ষক / মেন্টরের নাম), পদবি ও বিভাগ, ড্যাফোডিল ইন্টারন্যাশনাল ইউনিভার্সিটি (DIU)। ইমেইল: <code>mentor@daffodilvarsity.edu.bd</code><br>
+      • <strong>ডোমেইন উপদেষ্টা:</strong> ভূমি আইন ও ডিজিটাল গভর্নেন্স বিশেষজ্ঞ।
+    </p>
+
+    <!-- Bottom Footer -->
+    <div style="margin-top: 24px; padding-top: 10px; border-top: 1px solid #cbd5e1; font-size: 10.5px; color: #64748b; display: flex; justify-content: space-between;">
+      <span>GitHub Repository: https://github.com/mahin1205g-cyber/bhumisetu-ai</span>
+      <span>LandTech Innovation Hackathon 2026</span>
+    </div>
+  </div>
+
+</body>
+</html>
