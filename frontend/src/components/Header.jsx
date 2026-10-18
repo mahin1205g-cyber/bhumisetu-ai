@@ -152,117 +152,121 @@ export default function Header({ activeTab, setActiveTab, onOpenDrawer, setSelec
             </div>
           </div>
 
-          {/* Center: Amazon-Style Fast Binary Search Bar (100M-500M Scalability) */}
-          <div ref={searchRef} className="flex-1 max-w-2xl relative mx-1">
-            <form onSubmit={handleSearch} className="flex items-center rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#febd69] shadow-inner">
-              {/* Category Dropdown (Amazon-style 'All') */}
-              <select
-                value={searchCategory}
-                onChange={(e) => setSearchCategory(e.target.value)}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold px-2 py-2 border-r border-gray-300 outline-none cursor-pointer hidden md:block"
-              >
-                <option value="all">{lang === 'bn' ? 'সব রেকর্ড' : 'All'}</option>
-                <option value="deed">{lang === 'bn' ? 'দলিল (Deed)' : 'Deeds'}</option>
-                <option value="plot">{lang === 'bn' ? 'দাগ / প্লট' : 'Plots'}</option>
-                <option value="khatian">{lang === 'bn' ? 'খতিয়ান' : 'Khatian'}</option>
-                <option value="tracking">{lang === 'bn' ? 'নামজারি' : 'Tracking'}</option>
-              </select>
+          {/* Center: Amazon-Style Fast Binary Search Bar (Hidden on Login Portal) */}
+          {activeTab !== 'login' && activeTab !== 'register' ? (
+            <div ref={searchRef} className="flex-1 max-w-2xl relative mx-1">
+              <form onSubmit={handleSearch} className="flex items-center rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#febd69] shadow-inner">
+                {/* Category Dropdown (Amazon-style 'All') */}
+                <select
+                  value={searchCategory}
+                  onChange={(e) => setSearchCategory(e.target.value)}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold px-2 py-2 border-r border-gray-300 outline-none cursor-pointer hidden md:block"
+                >
+                  <option value="all">{lang === 'bn' ? 'সব রেকর্ড' : 'All'}</option>
+                  <option value="deed">{lang === 'bn' ? 'দলিল (Deed)' : 'Deeds'}</option>
+                  <option value="plot">{lang === 'bn' ? 'দাগ / প্লট' : 'Plots'}</option>
+                  <option value="khatian">{lang === 'bn' ? 'খতিয়ান' : 'Khatian'}</option>
+                  <option value="tracking">{lang === 'bn' ? 'নামজারি' : 'Tracking'}</option>
+                </select>
 
-              {/* Instant Search Input */}
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    if (e.target.value.length >= 2) {
-                      handleSearch();
-                    } else {
-                      setShowSearchResults(false);
-                    }
-                  }}
-                  onFocus={() => {
-                    if (searchQuery.length >= 2) setShowSearchResults(true);
-                  }}
-                  placeholder={
-                    lang === 'bn'
-                      ? 'দলিল নং, দাগ নং, খতিয়ান বা নামজারি ট্র্যাকিং দিয়ে খুঁজুন... (বাইনারি সার্চ O(log N))'
-                      : 'Search Deeds, Plots, Khatians, or Mutation Tracking (Binary Search O(log N))...'
-                  }
-                  className="w-full py-2 px-3 bg-white text-gray-900 text-xs outline-none placeholder:text-gray-400 font-medium"
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSearchQuery('');
-                      setShowSearchResults(false);
+                {/* Instant Search Input */}
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      if (e.target.value.length >= 2) {
+                        handleSearch();
+                      } else {
+                        setShowSearchResults(false);
+                      }
                     }}
-                    className="absolute right-2 top-2.5 text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-
-              {/* Amazon Golden Amber Search Button */}
-              <button
-                type="submit"
-                className="bg-[#febd69] hover:bg-[#f3a847] text-gray-950 px-3 sm:px-4 py-2 transition flex items-center justify-center font-bold"
-                title="Search using O(log N) Binary Search Algorithm"
-              >
-                <Search className={`w-4 h-4 ${isSearching ? 'animate-spin' : ''}`} />
-              </button>
-            </form>
-
-            {/* Live Binary Search Dropdown Results */}
-            {showSearchResults && searchQuery.trim().length >= 2 && (
-              <div className="absolute left-0 right-0 mt-1.5 bg-white dark:bg-[#131c27] rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50 text-xs">
-                {/* Benchmark Performance Header */}
-                <div className="bg-gray-100 dark:bg-[#1c2938] px-3 py-1.5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between text-[11px]">
-                  <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-semibold font-mono">
-                    <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                    <span>{searchMetrics?.algorithm || 'Binary Search B-Tree O(log N)'}</span>
-                  </div>
-                  <span className="text-gray-500 font-mono text-[10px]">
-                    ⏱ {searchMetrics?.timeMs || 0.12}ms | 500M user scale
-                  </span>
-                </div>
-
-                <div className="max-h-64 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800">
-                  {searchResults.length === 0 ? (
-                    <div className="py-6 text-center text-gray-500 dark:text-gray-400">
-                      {lang === 'bn' ? 'কোনো ফলাফল পাওয়া যায়নি' : 'No matching records found'}
-                    </div>
-                  ) : (
-                    searchResults.map((item, idx) => (
-                      <div
-                        key={idx}
-                        onClick={() => handleSelectResult(item)}
-                        className="p-2.5 hover:bg-amber-50 dark:hover:bg-[#1a2736] cursor-pointer flex items-center justify-between transition group"
-                      >
-                        <div>
-                          <div className="font-bold text-gray-900 dark:text-white group-hover:text-[#d97706] dark:group-hover:text-[#febd69]">
-                            {item._title}
-                          </div>
-                          <div className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
-                            {item._subtitle}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-mono uppercase">
-                            {item._match_type}
-                          </span>
-                          <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-1 transition" />
-                        </div>
-                      </div>
-                    ))
+                    onFocus={() => {
+                      if (searchQuery.length >= 2) setShowSearchResults(true);
+                    }}
+                    placeholder={
+                      lang === 'bn'
+                        ? 'দলিল নং, দাগ নং, খতিয়ান বা নামজারি ট্র্যাকিং দিয়ে খুঁজুন... (বাইনারি সার্চ O(log N))'
+                        : 'Search Deeds, Plots, Khatians, or Mutation Tracking (Binary Search O(log N))...'
+                    }
+                    className="w-full py-2 px-3 bg-white text-gray-900 text-xs outline-none placeholder:text-gray-400 font-medium"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery('');
+                        setShowSearchResults(false);
+                      }}
+                      className="absolute right-2 top-2.5 text-gray-400 hover:text-gray-600"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
                   )}
                 </div>
-              </div>
-            )}
-          </div>
+
+                {/* Amazon Golden Amber Search Button */}
+                <button
+                  type="submit"
+                  className="bg-[#febd69] hover:bg-[#f3a847] text-gray-950 px-3 sm:px-4 py-2 transition flex items-center justify-center font-bold"
+                  title="Search using O(log N) Binary Search Algorithm"
+                >
+                  <Search className={`w-4 h-4 ${isSearching ? 'animate-spin' : ''}`} />
+                </button>
+              </form>
+
+              {/* Live Binary Search Dropdown Results */}
+              {showSearchResults && searchQuery.trim().length >= 2 && (
+                <div className="absolute left-0 right-0 mt-1.5 bg-white dark:bg-[#131c27] rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50 text-xs">
+                  {/* Benchmark Performance Header */}
+                  <div className="bg-gray-100 dark:bg-[#1c2938] px-3 py-1.5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between text-[11px]">
+                    <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-semibold font-mono">
+                      <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                      <span>{searchMetrics?.algorithm || 'Binary Search B-Tree O(log N)'}</span>
+                    </div>
+                    <span className="text-gray-500 font-mono text-[10px]">
+                      ⏱ {searchMetrics?.timeMs || 0.12}ms | 500M user scale
+                    </span>
+                  </div>
+
+                  <div className="max-h-64 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800">
+                    {searchResults.length === 0 ? (
+                      <div className="py-6 text-center text-gray-500 dark:text-gray-400">
+                        {lang === 'bn' ? 'কোনো ফলাফল পাওয়া যায়নি' : 'No matching records found'}
+                      </div>
+                    ) : (
+                      searchResults.map((item, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => handleSelectResult(item)}
+                          className="p-2.5 hover:bg-amber-50 dark:hover:bg-[#1a2736] cursor-pointer flex items-center justify-between transition group"
+                        >
+                          <div>
+                            <div className="font-bold text-gray-900 dark:text-white group-hover:text-[#d97706] dark:group-hover:text-[#febd69]">
+                              {item._title}
+                            </div>
+                            <div className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                              {item._subtitle}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-mono uppercase">
+                              {item._match_type}
+                            </span>
+                            <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-1 transition" />
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex-1" />
+          )}
 
           {/* Right Controls: Language, Theme, Notifications, Profile */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
