@@ -17,14 +17,37 @@ import secrets
 from datetime import datetime, date
 from pathlib import Path
 
-DB = os.environ.get("LANDTECH_DB", str(Path(__file__).parent / "landtech.db"))
+def get_db_path():
+    env_db = os.environ.get("LANDTECH_DB")
+    if env_db:
+        return env_db
+    if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+        tmp_db = "/tmp/landtech.db"
+        orig_db = Path(__file__).parent / "landtech.db"
+        if not os.path.exists(tmp_db) and orig_db.exists():
+            import shutil
+            try:
+                shutil.copy2(str(orig_db), tmp_db)
+            except Exception:
+                pass
+        return tmp_db
+    return str(Path(__file__).parent / "landtech.db")
+
+DB = get_db_path()
 
 
 def conn():
-    c = sqlite3.connect(DB, timeout=20.0)
+    current_db = get_db_path()
+    c = sqlite3.connect(current_db, timeout=20.0)
     c.row_factory = sqlite3.Row
-    c.execute("PRAGMA journal_mode = WAL;")
-    c.execute("PRAGMA synchronous = NORMAL;")
+    try:
+        c.execute("PRAGMA journal_mode = WAL;")
+    except Exception:
+        pass
+    try:
+        c.execute("PRAGMA synchronous = NORMAL;")
+    except Exception:
+        pass
     c.execute("PRAGMA cache_size = -64000;")
     c.execute("PRAGMA temp_store = MEMORY;")
     return c

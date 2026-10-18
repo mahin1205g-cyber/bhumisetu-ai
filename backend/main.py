@@ -29,7 +29,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-engine.init()
+try:
+    engine.init()
+except Exception as e:
+    print(f"Warning: engine.init() encountered: {e}")
+
+
+@app.get("/")
+def root():
+    return {
+        "status": "online",
+        "service": "BhumiSathi LandGuard AI API",
+        "version": "2.0.0",
+        "message": "FastAPI backend is successfully running on Vercel!"
+    }
+
+
+@app.get("/api")
+def api_root():
+    return {
+        "status": "online",
+        "service": "BhumiSathi API",
+        "version": "2.0.0"
+    }
 
 
 # =====================================================================
