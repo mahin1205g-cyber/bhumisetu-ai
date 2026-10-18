@@ -28,7 +28,7 @@ import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
   const { user } = useApp();
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState('login');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [verificationResult, setVerificationResult] = useState(null);
   const [dueDiligenceResult, setDueDiligenceResult] = useState(null);

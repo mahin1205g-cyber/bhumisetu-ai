@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import BhumiSathiLogo from '../components/BhumiSathiLogo';
 import {
   ShieldCheck, FileCheck2, GitBranchPlus, AlertOctagon, ArrowRight,
-  Sparkles, CheckCircle2, ChevronRight, HelpCircle, FileText, QrCode, Zap
+  Sparkles, CheckCircle2, ChevronRight, HelpCircle, FileText, QrCode
 } from 'lucide-react';
 
 export default function LandingPage({ setActiveTab }) {
@@ -100,11 +100,6 @@ export default function LandingPage({ setActiveTab }) {
               : 'Digital Deed Verification, Smart E-Namjari Workflow, and Pre-Purchase Due Diligence for Safer Land Decisions.'}
           </p>
 
-          {/* Algorithmic Scalability Callout */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-black/40 border border-emerald-500/40 text-[11px] text-emerald-300 font-mono shadow-inner animate-fade-up backdrop-blur-md" style={{ animationDelay: '0.3s' }}>
-            <Zap className="w-3.5 h-3.5 text-[#febd69] animate-pulse" />
-            <span>High-Load Resilient: Binary Search O(log N) · 100M-500M Capacity</span>
-          </div>
 
           {/* 3D Pressable Action Buttons (Screenshot 1) */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2 animate-fade-up" style={{ animationDelay: '0.4s' }}>

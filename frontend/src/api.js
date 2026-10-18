@@ -162,24 +162,80 @@ function getMockFallback(endpoint, options = {}) {
   // 3. E-Namjari Mutation Apply
   if (endpoint.includes("/mutation/apply")) {
     const trackNo = `MUT-2026-DHK-${Math.floor(1000 + Math.random() * 9000)}`;
-    return {
+    const newApp = {
       tracking_no: trackNo,
       status: body.is_draft ? "Draft" : "Submitted",
+      status_info: {
+        bn: body.is_draft ? "খসড়া সংরক্ষিত" : "দাখিলকৃত (Under Review)",
+        en: body.is_draft ? "Draft Saved" : "Submitted (Under Review)"
+      },
       applicant_name: body.applicant_name || "মোঃ রফিকুল ইসলাম",
-      plot_no: body.plot_no || "DHK-MIR-002",
+      applicant_nid: body.applicant_nid || "19902692518000123",
+      applicant_phone: body.applicant_phone || "01711000000",
+      applicant_address: body.applicant_address || "মিরপুর, ঢাকা",
+      district: body.district || "ঢাকা",
+      upazila: body.upazila || "মিরপুর",
+      mouza: body.mouza || "পাইকপাড়া",
+      jl_no: body.jl_no || "১০২",
+      khatian_type: body.khatian_type || "BS",
       khatian_no: body.khatian_no || "BS-1046",
+      plot_no: body.plot_no || "DHK-MIR-002",
+      land_area: body.land_area || 4.5,
+      land_class: body.land_class || "নাল (Nal)",
+      ownership_source: body.ownership_source || "ক্রয়সূত্রে (Purchase)",
+      deed_no: body.deed_no || "D-8492",
+      supporting_docs: body.supporting_docs || ["মূল সাফা কবলা দলিল D-8492"],
+      review_notes: "আবেদনটি ডিজিটালভাবে গৃহীত হয়েছে এবং প্রাথমিক পর্যালোচনার অপেক্ষায় আছে।",
       created_at: now,
-      updated_at: now
+      updated_at: now,
+      timeline: [
+        {
+          to_status: body.is_draft ? "Draft" : "Submitted",
+          created_at: now,
+          changed_by_name: body.applicant_name || "মোঃ রফিকুল ইসলাম",
+          changed_by_role: "নাগরিক (Applicant)",
+          remarks: body.is_draft ? "খসড়া তথ্য সংরক্ষণ করা হয়েছে।" : "স্মার্ট ই-নামজারি পোর্টালে ডিজিটাল আবেদন সফলভাবে দাখিল করা হয়েছে।"
+        }
+      ]
     };
+
+    try {
+      const stored = JSON.parse(localStorage.getItem("lg_saved_mutations") || "{}");
+      stored[trackNo] = newApp;
+      localStorage.setItem("lg_saved_mutations", JSON.stringify(stored));
+    } catch (e) {}
+
+    return newApp;
   }
 
   // 4. Mutation Track
   if (endpoint.includes("/mutation/track")) {
     const match = endpoint.match(/\/mutation\/track\/([^?]+)/);
-    const trackingNo = match ? match[1] : "MUT-2026-DHK-4821";
+    const trackingNo = match ? decodeURIComponent(match[1]) : "MUT-2026-DHK-4821";
+
+    try {
+      const stored = JSON.parse(localStorage.getItem("lg_saved_mutations") || "{}");
+      if (stored[trackingNo]) {
+        return stored[trackingNo];
+      }
+    } catch (e) {}
+
+    const isApproved = trackingNo.includes("1904");
+    const isNotice = trackingNo.includes("9012");
+    const currentStatus = isApproved ? "Approved" : isNotice ? "Additional Information Required" : "Document Verification";
+
     return {
       tracking_no: trackingNo,
-      status: "Under Review",
+      status: currentStatus,
+      status_info: {
+        bn: isApproved ? "অনুমোদিত" : isNotice ? "অতিরিক্ত তথ্য তলব" : "কাগজপত্র যাচাই চলছে",
+        en: isApproved ? "Approved" : isNotice ? "Additional Information Required" : "Document Verification"
+      },
+      review_notes: isNotice
+        ? "মৌজা ম্যাপের সাথে দাগের সীমানা ও হিস্যা বর্ণনায় অসঙ্গতি রয়েছে। অনুগ্রহ করে মূল দলিলের বালাম কপি ও সরেজমিন সীমানা নির্দেশক স্কেচ দাখিল করুন।"
+        : isApproved
+        ? "সকল রেকর্ড ও বালাম খতিয়ান সফলভাবে যাচাই সম্পন্ন হয়েছে। নামজারি আবেদন মঞ্জুর করা হলো এবং নতুন খতিয়ান প্রস্তুত।"
+        : "ইউনিয়ন ভূমি সহকারী কর্মকর্তার প্রতিবেদন গৃহীত হয়েছে। সাব-রেজিস্ট্রি বালাম ও সার্ভেয়ারের প্রতিবেদন যাচাই চলছে।",
       applicant_name: "মোঃ রফিকুল ইসলাম",
       applicant_nid: "19902692518000123",
       applicant_phone: "01711000000",
@@ -187,18 +243,40 @@ function getMockFallback(endpoint, options = {}) {
       upazila: "মিরপুর",
       mouza: "পাইকপাড়া",
       plot_no: "DHK-MIR-002",
+      khatian_type: "BS",
       khatian_no: "BS-1046",
       land_area: 4.5,
       land_class: "নাল (Nal)",
       ownership_source: "ক্রয়সূত্রে (Purchase)",
       deed_no: "D-8492",
-      created_at: now,
+      supporting_docs: ["মূল সাফা কবলা দলিল", "হালনাগাদ দাখিলা ও খাজনা রশিদ"],
+      created_at: new Date(Date.now() - 3600 * 24 * 3 * 1000).toISOString(),
       timeline: [
-        { status: "Submitted", date: "১৮ অক্টোবর ২০২৬", title: "আবেদন দাখিল সম্পন্ন", completed: true },
-        { status: "Under Review", date: "১৮ অক্টোবর ২০২৬", title: "ইউনিয়ন ভূমি সহকারী কর্মকর্তা পর্যালোচনাধীন", completed: true },
-        { status: "Survey Scheduled", date: "আসন্ন", title: "সরেজমিন জরিপ ও প্রতিবেদন", completed: false },
-        { status: "Hearing Notice", date: "আসন্ন", title: "শুনানির তারিখ নির্ধারণ", completed: false },
-        { status: "Approved", date: "আসন্ন", title: "চূড়ান্ত নামজারি খতিয়ান প্রদান", completed: false }
+        {
+          to_status: "Submitted",
+          created_at: new Date(Date.now() - 3600 * 24 * 3 * 1000).toISOString(),
+          changed_by_name: "মোঃ রফিকুল ইসলাম",
+          changed_by_role: "নাগরিক (Applicant)",
+          remarks: "অনলাইনে নামজারি আবেদন ফরম ও প্রয়োজনীয় দলিল আপলোড করা হয়েছে।"
+        },
+        {
+          to_status: "Initial Review",
+          created_at: new Date(Date.now() - 3600 * 24 * 2 * 1000).toISOString(),
+          changed_by_name: "আব্দুল মান্নান",
+          changed_by_role: "ইউনিয়ন ভূমি সহকারী কর্মকর্তা",
+          remarks: "প্রাথমিক তথ্য ও জমির অবস্থান সরেজমিনে প্রাথমিকভাবে সঠিক পাওয়া গেছে।"
+        },
+        {
+          to_status: currentStatus,
+          created_at: new Date(Date.now() - 3600 * 24 * 1 * 1000).toISOString(),
+          changed_by_name: "বেগম ফরিদা পারভীন",
+          changed_by_role: "সহকারী কমিশনার (ভূমি) / AC Land",
+          remarks: isNotice
+            ? "কাগজপত্রে তথ্যের গরমিল থাকায় শুনানি ও অতিরিক্ত প্রমাণের নোটিশ জারি করা হলো।"
+            : isApproved
+            ? "চূড়ান্ত যাচাই শেষে নামজারি আবেদন অনুমোদন ও খতিয়ান সৃজন করা হলো।"
+            : "সাব-রেজিস্ট্রি দলিলের সত্যতা ও বালাম ভলিউম নিরীক্ষণ চলছে।"
+        }
       ]
     };
   }
@@ -330,6 +408,139 @@ function getMockFallback(endpoint, options = {}) {
     };
   }
 
+  // 9. Mutation Lists & Stats
+  if (endpoint.includes("/mutation/all-applications") || endpoint.includes("/mutation/my-applications")) {
+    let savedList = [];
+    try {
+      const stored = JSON.parse(localStorage.getItem("lg_saved_mutations") || "{}");
+      savedList = Object.values(stored);
+    } catch (e) {}
+
+    const defaultApps = [
+      {
+        tracking_no: "MUT-2026-DHK-4821",
+        status: "Document Verification",
+        status_info: { bn: "কাগজপত্র যাচাই চলছে", en: "Document Verification" },
+        applicant_name: "মোঃ রফিকুল ইসলাম",
+        plot_no: "DHK-MIR-002",
+        khatian_no: "BS-1046",
+        land_area: 4.5,
+        created_at: new Date(Date.now() - 3600 * 24 * 3 * 1000).toISOString()
+      },
+      {
+        tracking_no: "MUT-2026-CTG-1904",
+        status: "Approved",
+        status_info: { bn: "অনুমোদিত", en: "Approved" },
+        applicant_name: "সালমা বেগম",
+        plot_no: "CTG-KOT-088",
+        khatian_no: "BS-2091",
+        land_area: 6.2,
+        created_at: new Date(Date.now() - 3600 * 24 * 7 * 1000).toISOString()
+      },
+      {
+        tracking_no: "MUT-2026-DHK-9012",
+        status: "Additional Information Required",
+        status_info: { bn: "অতিরিক্ত তথ্য তলব", en: "Additional Information Required" },
+        applicant_name: "মোঃ জাহিদ হাসান",
+        plot_no: "DHK-MIR-001",
+        khatian_no: "BS-1045",
+        land_area: 5.0,
+        created_at: new Date(Date.now() - 3600 * 24 * 5 * 1000).toISOString()
+      }
+    ];
+
+    return [...savedList, ...defaultApps];
+  }
+
+  if (endpoint.includes("/mutation/stats")) {
+    return {
+      total: 18,
+      pending: 6,
+      approved: 10,
+      rejected: 2
+    };
+  }
+
+  if (endpoint.includes("/mutation/action")) {
+    return { success: true, message: "পদক্ষেপ সফলভাবে রেকর্ড করা হয়েছে।" };
+  }
+
+  // 10. Audit Logs
+  if (endpoint.includes("/audit-logs")) {
+    return [
+      {
+        id: 1,
+        user_name: "মোঃ রফিকুল ইসলাম",
+        action: "DEED_VERIFICATION_CHECK",
+        module: "দলিল যাচাই",
+        details: "দলিল D-8492 ও বালাম বই নিরীক্ষা সম্পন্ন।",
+        created_at: new Date(Date.now() - 1000 * 60 * 30).toISOString()
+      },
+      {
+        id: 2,
+        user_name: "বেগম ফরিদা পারভীন, এসি ল্যান্ড",
+        action: "MUTATION_NOTICE_ISSUED",
+        module: "ই-নামজারি",
+        details: "আবেদন MUT-2026-DHK-9012 এ শুনানির নোটিশ জারি।",
+        created_at: new Date(Date.now() - 1000 * 60 * 120).toISOString()
+      },
+      {
+        id: 3,
+        user_name: "সিস্টেম বট",
+        action: "DUE_DILIGENCE_AUTO_SCAN",
+        module: "স্বত্ব যাচাই",
+        details: "প্লট DHK-MIR-001 এ ঝুঁকি সূচক হাইলাইট করা হয়েছে।",
+        created_at: new Date(Date.now() - 1000 * 60 * 300).toISOString()
+      }
+    ];
+  }
+
+  // 11. Notifications
+  if (endpoint.includes("/notifications")) {
+    return [
+      {
+        id: 1,
+        title_bn: "দলিল যাচাই সফল",
+        title_en: "Deed Verified",
+        message_bn: "আপনার প্রেরিত দলিল D-8492 বালাম রেকর্ডের সাথে ১০০% মিলেছে।",
+        message_en: "Submitted deed matched 100% with registered demo volume.",
+        is_read: false,
+        created_at: now
+      },
+      {
+        id: 2,
+        title_bn: "নামজারি আবেদনের অগ্রগতি",
+        title_en: "Mutation Update",
+        message_bn: "আপনার আবেদন MUT-2026-DHK-4821 নথি যাচাই পর্যায়ে রয়েছে।",
+        message_en: "Application MUT-2026-DHK-4821 is currently in document review.",
+        is_read: true,
+        created_at: now
+      }
+    ];
+  }
+
+  // Reports lists
+  if (endpoint.includes("/verification/reports")) {
+    return [];
+  }
+  if (endpoint.includes("/due-diligence/reports")) {
+    return [];
+  }
+
+  // System seed & user
+  if (endpoint.includes("/seed")) {
+    return { success: true, message: "ডেমো ডেটাবেজ রিসেট সম্পন্ন হয়েছে।" };
+  }
+  if (endpoint.includes("/auth/me")) {
+    return {
+      id: 1,
+      name: "মোঃ রফিকুল ইসলাম",
+      email: "citizen@landguard.gov.bd",
+      role: "citizen",
+      designation: "নাগরিক"
+    };
+  }
+
   return null;
 }
 
@@ -363,8 +574,12 @@ async function request(endpoint, options = {}) {
     throw new Error("অনুরোধটি সম্পন্ন করা যায়নি (Request failed)");
   }
 
-  if (!response.ok) {
-    // If endpoint returned 404 or server error (e.g. on static Vercel host), use mock fallback
+  // Check Content-Type: If backend or Vite/Vercel returned HTML (e.g. index.html SPA fallback)
+  const contentType = response.headers.get("content-type") || "";
+  const isHtml = contentType.includes("text/html");
+
+  if (isHtml || !response.ok) {
+    // If endpoint returned 404, HTML, or server error, use mock fallback seamlessly
     const fallback = getMockFallback(endpoint, options);
     if (fallback !== null) return fallback;
 
@@ -378,7 +593,13 @@ async function request(endpoint, options = {}) {
     throw new Error(errMsg);
   }
 
-  return response.json();
+  try {
+    return await response.json();
+  } catch (jsonErr) {
+    const fallback = getMockFallback(endpoint, options);
+    if (fallback !== null) return fallback;
+    throw jsonErr;
+  }
 }
 
 export const api = {
