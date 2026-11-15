@@ -910,6 +910,20 @@ def _public_user_data(user: dict) -> dict:
     return {key: user.get(key) for key in allowed if key in user}
 
 
+def _authenticated_user_profile(user: dict) -> dict:
+    """Return only the profile fields used by the authenticated frontend."""
+    return {
+        "id": user["id"],
+        "name": user.get("name") or "",
+        "username": user.get("username") or "",
+        "nid_masked": user.get("nid_masked"),
+        "profile_picture": user.get("profile_picture"),
+        "email": user.get("email") or "",
+        "role": user.get("role") or "",
+        "designation": user.get("designation") or "",
+    }
+
+
 def _valid_username(username: str) -> bool:
     return bool(re.fullmatch(r"[A-Za-z0-9_.]{4,30}", username))
 
@@ -1535,7 +1549,11 @@ def refresh_auth_session(
             raise HTTPException(status_code=401, detail={"code": "invalid_session", "message": "Session expired or invalid."})
         session_id, new_refresh_cookie = _create_auth_session(user["id"], user.get("auth_version", 0))
         _set_refresh_cookie(response, request, new_refresh_cookie)
-        return {"success": True, "token": issue_access_token(user["id"], user.get("auth_version", 0), session_id)}
+        return {
+            "success": True,
+            "token": issue_access_token(user["id"], user.get("auth_version", 0), session_id),
+            "user": _authenticated_user_profile(user),
+        }
 
     token_hash = _refresh_token_hash(refresh_cookie)
     next_refresh_cookie = secrets.token_urlsafe(48)
@@ -1548,7 +1566,9 @@ def refresh_auth_session(
             """SELECT s.session_id,s.user_id,s.auth_version,s.refresh_token_hash,
                       s.previous_refresh_token_hash,s.previous_rotated_at,s.revoked_at,
                       (s.expires_at <= CURRENT_TIMESTAMP) AS expired,
-                      u.auth_version AS current_auth_version
+                      u.auth_version AS current_auth_version,
+                      u.name,u.username,u.email,u.profile_picture,u.role,u.designation,
+                      CASE WHEN COALESCE(u.nid,'')='' THEN NULL ELSE '••••••••' || RIGHT(u.nid,4) END AS nid_masked
                FROM auth_sessions s JOIN users u ON u.id=s.user_id
                WHERE s.refresh_token_hash=%s OR s.previous_refresh_token_hash=%s
                FOR UPDATE OF s""",
@@ -1582,6 +1602,13 @@ def refresh_auth_session(
                 "id": row["user_id"],
                 "auth_version": row["current_auth_version"],
                 "session_id": row["session_id"],
+                "name": row.get("name"),
+                "username": row.get("username"),
+                "email": row.get("email"),
+                "profile_picture": row.get("profile_picture"),
+                "role": row.get("role"),
+                "designation": row.get("designation"),
+                "nid_masked": row.get("nid_masked"),
             }
 
     if rotation_in_progress:
@@ -1594,6 +1621,7 @@ def refresh_auth_session(
     return {
         "success": True,
         "token": issue_access_token(session["id"], session["auth_version"], session["session_id"]),
+        "user": _authenticated_user_profile(session),
     }
 
 
@@ -1623,18 +1651,8 @@ def get_current_user(authorization: Optional[str] = Header(None)):
     user = extract_user_from_auth_header(authorization)
     if not user:
         raise HTTPException(status_code=401, detail="Authentication required")
-    # Return only the current user's profile fields needed by the frontend.
     # NID, password metadata and auth internals stay out of this response.
-    return {
-        "id": user["id"],
-        "name": user.get("name") or "",
-        "username": user.get("username") or "",
-        "nid_masked": user.get("nid_masked"),
-        "profile_picture": user.get("profile_picture"),
-        "email": user.get("email") or "",
-        "role": user.get("role") or "",
-        "designation": user.get("designation") or "",
-    }
+    return _authenticated_user_profile(user)
 
 
 @app.put("/api/profile-picture")

@@ -136,7 +136,7 @@ async function sendRequest(endpoint, options = {}, token = getToken()) {
   }
 }
 
-async function refreshAccessToken() {
+async function refreshSession() {
   if (hasExplicitLogoutMarker()) {
     const error = new Error("You have logged out. Sign in again to continue.");
     error.status = 401;
@@ -164,7 +164,10 @@ async function refreshAccessToken() {
       try { payload = await response.json(); } catch { payload = null; }
       if (response.ok && payload?.token) {
         setToken(payload.token);
-        return payload.token;
+        return {
+          token: payload.token,
+          user: payload.user?.id != null ? payload.user : null,
+        };
       }
       const error = createRequestError(payload, response.status);
       if (response.status === 409 && error.code === "session_rotated" && attempt < 3) {
@@ -183,6 +186,11 @@ async function refreshAccessToken() {
   } finally {
     refreshPromise = null;
   }
+}
+
+async function refreshAccessToken() {
+  const session = await refreshSession();
+  return session.token;
 }
 
 async function request(endpoint, options = {}) {
@@ -247,8 +255,10 @@ export const api = {
       await request("/auth/logout", { method: "POST" }).catch(() => null);
       return null;
     }
-    await refreshAccessToken();
-    return request("/auth/me");
+    const session = await refreshSession();
+    // Current backend versions return this profile with the rotated access token,
+    // avoiding a second serial database-backed request on every page reload.
+    return session.user || request("/auth/me");
   },
 
   logout: () => request("/auth/logout", { method: "POST" }),

@@ -4,6 +4,7 @@
   "buildCommand": "cd frontend && npm install --production=false --no-audit --no-fund && npm run build && cd .. && rm -rf public && cp -r frontend/dist public && (rm -rf frontend/node_modules || true)",
   "functions": {
     "app.py": {
+      "regions": ["sin1"],
       "maxDuration": 60
     }
   }

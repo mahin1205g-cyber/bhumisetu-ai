@@ -93,7 +93,7 @@ export default function Login({ setActiveTab, navigateBack }) {
           : 'This account role does not match the selected login portal.');
         return;
       }
-      await loginUser(result.token);
+      await loginUser(result.token, result.user);
       setActiveTab(portal === 'admin' ? 'admin' : portal === 'officer' ? 'officer-review' : 'dashboard');
     } catch (err) {
       const detail = err.payload?.detail;

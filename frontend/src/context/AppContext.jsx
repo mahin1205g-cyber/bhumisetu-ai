@@ -134,12 +134,12 @@ export function AppProvider({ children }) {
     return translations[lang]?.[key] || translations['bn']?.[key] || key;
   };
 
-  const loginUser = async (token) => {
+  const loginUser = async (token, loginProfile) => {
     setAuthStatus('loading');
     setToken(token);
     try { localStorage.removeItem('lg_logged_out'); } catch { /* The server-issued session is authoritative. */ }
     try {
-      const profile = await api.getMe();
+      const profile = loginProfile?.id != null ? loginProfile : await api.getMe();
       setUser(profile);
       setAuthStatus('authenticated');
       try { localStorage.setItem('lg_auth_session_changed', String(Date.now())); } catch { /* Cross-tab sync is optional. */ }
