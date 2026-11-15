@@ -3,7 +3,8 @@
 ## Required configuration
 
 - Set `APP_ENV=production`, `DATABASE_URL`, and a randomly generated `JWT_SECRET` of at least 32 bytes in the deployment secret store. Do not put real secrets in `.env`, source control, `VITE_*` variables, or logs.
-- Set `CORS_ORIGINS` to comma-separated HTTPS frontend origins. Production startup rejects wildcard or non-HTTPS origins.
+- Set `CORS_ORIGINS` to comma-separated, exact HTTPS frontend origins (scheme + hostname, no API path). Production startup rejects wildcards, malformed values, and non-HTTPS origins. Use the stable production domain shown in the frontend host's Domains settings; add preview domains only to that preview backend environment.
+- When the frontend and API are separately hosted, set the frontend build variable `VITE_API_URL` to the backend API base ending in `/api` (for example, `https://api.example.com/api`). Same-origin deployments may keep the `/api` default.
 - Put the API behind an HTTPS reverse proxy. `/health` is liveness; `/ready` checks PostgreSQL. `/docs`, `/redoc`, and OpenAPI are disabled in production.
 - Password recovery is disabled in production until a verified out-of-band delivery provider is implemented. Development recovery returns a reset token directly and must not be exposed as a production flow.
 - OCR and profile-image uploads require authentication and have per-process request limits; deed files are capped at 10 MB and profile images at 5 MB. OCR runs in the worker thread pool.

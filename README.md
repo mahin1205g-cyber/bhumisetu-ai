@@ -116,7 +116,7 @@ cd backend && uvicorn main:app --reload --port 8000
 | --- | --- |
 | `DATABASE_URL` | Neon/Postgres connection string (`...?sslmode=require`) — **বাধ্যতামূলক** |
 | `GEMINI_API_KEY` | Google Gemini key (AI chat-এর জন্য) |
-| `CORS_ORIGINS` | ফ্রন্টএন্ড আলাদা ডোমেইনে থাকলে সেটির URL (কমা দিয়ে একাধিক) |
+| `CORS_ORIGINS` | exact HTTPS frontend origin (শুধু scheme + hostname, comma-separated; API path বা wildcard নয়) |
 
 **এক প্রজেক্টে ফ্রন্টএন্ড + ব্যাকএন্ড (প্রস্তাবিত):**
 
@@ -138,7 +138,7 @@ cd backend && uvicorn main:app --reload --port 8000
 
 - **ব্যাকএন্ড:** Root Directory = `backend` (কোনো `vercel.json` লাগবে না, `main.py`
   স্বয়ংক্রিয়ভাবে FastAPI entrypoint হিসেবে ডিটেক্ট হয়)। env: `DATABASE_URL`,
-  `GEMINI_API_KEY`, `CORS_ORIGINS=https://<frontend-domain>`।
+  `GEMINI_API_KEY`, `CORS_ORIGINS=https://<stable-frontend-domain>`। Vercel-এর frontend **Domains** পেজে দেখানো production domain দিন; `https://` রাখুন, path বা trailing slash দেবেন না। আলাদা preview deployment হলে তার backend environment-এ preview origin আলাদাভাবে দিন; `*.vercel.app` wildcard ব্যবহার করবেন না।
 - **ফ্রন্টএন্ড:** Root Directory = `frontend`, env:
   `VITE_API_URL=https://<backend-domain>/api`।
 

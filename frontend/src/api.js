@@ -1,5 +1,6 @@
 // Bhumisetu (ভূমিসেতু) API client
-// Set VITE_API_URL to your backend API base, e.g. https://your-backend.vercel.app/api
+// Same-origin deployments use /api. For a separately hosted backend, set
+// VITE_API_URL to its API base (for example https://api.example.com/api).
 
 const configuredBaseUrl = import.meta.env.VITE_API_URL || "/api";
 const BASE_URL = configuredBaseUrl.replace(/\/+$/, "");

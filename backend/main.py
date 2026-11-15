@@ -22,6 +22,7 @@ import unicodedata
 from typing import Optional, List, Literal
 from collections import defaultdict, deque
 from threading import Lock
+from urllib.parse import urlsplit
 
 
 
@@ -133,9 +134,11 @@ async def lifespan(app: FastAPI):
         _auth_secret()
         if not os.environ.get("DATABASE_URL"):
             raise RuntimeError("DATABASE_URL must be configured in production")
-        if not os.environ.get("CORS_ORIGINS") or "*" in os.environ["CORS_ORIGINS"].split(","):
+        configured_origins = os.environ.get("CORS_ORIGINS", "")
+        trusted_origins, invalid_origins = _parse_cors_origins(configured_origins)
+        if not configured_origins.strip() or not trusted_origins or invalid_origins:
             raise RuntimeError("CORS_ORIGINS must contain explicit production origins")
-        if any(not origin.strip().lower().startswith("https://") for origin in os.environ["CORS_ORIGINS"].split(",") if origin.strip()):
+        if any(urlsplit(origin).scheme != "https" for origin in trusted_origins):
             raise RuntimeError("Production CORS_ORIGINS must use HTTPS")
     try:
         try:
@@ -221,7 +224,59 @@ async def database_connection_error(request: Request, exc: OperationalError):
 
 _default_origins = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:8000,http://127.0.0.1:8000"
 
-cors_origins = [o.strip() for o in os.environ.get("CORS_ORIGINS", _default_origins).split(",") if o.strip()]
+
+def _normalize_origin(value: str) -> Optional[str]:
+    """Canonicalize an explicit web origin, rejecting URLs and wildcard entries."""
+    candidate = str(value or "").strip()
+    if not candidate or any(character.isspace() for character in candidate) or "?" in candidate or "#" in candidate:
+        return None
+    try:
+        parsed = urlsplit(candidate)
+        scheme = parsed.scheme.lower()
+        hostname = parsed.hostname
+        port = parsed.port
+    except ValueError:
+        return None
+    if (
+        scheme not in {"http", "https"}
+        or not hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.path not in {"", "/"}
+        or "*" in hostname
+    ):
+        return None
+    if ":" in hostname:  # IPv6 literals must retain their brackets in an origin.
+        host = f"[{hostname.lower()}]"
+    else:
+        try:
+            host = hostname.rstrip(".").encode("idna").decode("ascii").lower()
+        except UnicodeError:
+            return None
+    default_port = 443 if scheme == "https" else 80
+    authority = host if port in {None, default_port} else f"{host}:{port}"
+    return f"{scheme}://{authority}"
+
+
+def _parse_cors_origins(value: str) -> tuple[list[str], list[str]]:
+    """Return normalized trusted origins and invalid configured entries."""
+    origins: list[str] = []
+    invalid: list[str] = []
+    for item in str(value or "").split(","):
+        candidate = item.strip()
+        if not candidate:
+            continue
+        normalized = _normalize_origin(candidate)
+        if normalized is None:
+            invalid.append(candidate)
+        elif normalized not in origins:
+            origins.append(normalized)
+    return origins, invalid
+
+
+cors_origins, _invalid_cors_origins = _parse_cors_origins(
+    os.environ.get("CORS_ORIGINS", _default_origins)
+)
 
 app.add_middleware(
 
@@ -769,6 +824,7 @@ def login(
     response: Response = None,
     refresh_cookie: Optional[str] = Cookie(None, alias="bhumisetu_refresh"),
 ):
+    _validate_auth_origin(request)
     identifier = req.identifier.strip().lower()
     identifier_is_email = "@" in identifier
     client_ip = request.client.host if request.client else "unknown"
@@ -888,6 +944,8 @@ def register(
     response: Response = None,
     refresh_cookie: Optional[str] = Cookie(None, alias="bhumisetu_refresh"),
 ):
+    if request is not None:
+        _validate_auth_origin(request)
     client_ip = request.client.host if request and request.client else "unit-or-unknown"
     _enforce_login_ip_rate_limit(client_ip, "register")
     email = req.email.strip().lower()
@@ -996,8 +1054,10 @@ def _clear_refresh_cookie(response: Response, request: Request):
 
 
 def _validate_auth_origin(request: Request):
-    origin = request.headers.get("origin")
-    if origin and origin not in cors_origins:
+    headers = getattr(request, "headers", {})
+    origin = headers.get("origin") if hasattr(headers, "get") else None
+    normalized_origin = _normalize_origin(origin) if origin else None
+    if origin and (normalized_origin is None or normalized_origin not in cors_origins):
         raise HTTPException(status_code=403, detail="Authentication request origin is not allowed.")
 
 
